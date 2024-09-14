@@ -1,0 +1,75 @@
+@page
+@model LibrarySystem.Pages.Library.Authors.AuthorBooksModel
+
+@{
+    ViewData["Title"] = "AuthorBooks";
+}
+
+<h2>Books by @Model.Author.FirstName @Model.Author.LastName</h2>
+
+<p>
+    <a asp-page="./Books/Create" asp-route-id="@Model.Author.AuthorId">Create New</a>
+</p>
+
+
+@if (!Model.Books.Any())
+{
+<p>No books available for this author.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Author.Books[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Author.Books[0].PublishedDate)
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Books)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublishedDate)
+                </td>
+                <td>
+                    <a asp-page="./Books/Edit" asp-route-id="@item.BookId" asp-route-authorId="@item.AuthorId">Edit</a> |
+                    <a asp-page="./Books/Details" asp-route-id="@item.BookId">Details</a> |
+                    <a asp-page="./Books/Delete" asp-route-id="@item.BookId">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+<div class="pagination">
+    <ul class="pagination">
+        <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
+            <a asp-page="./AuthorBooks" asp-route-id="@Model.Author.AuthorId" asp-route-pageNumber="@(Model.CurrentPage - 1)"
+               class="page-link">&laquo;</a>
+        </li>
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a asp-page="./AuthorBooks" asp-route-id="@Model.Author.AuthorId" asp-route-pageNumber="@i" class="page-link">@i</a>
+            </li>
+        }
+        <li class="page-item  @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
+            <a asp-page="./AuthorBooks" asp-route-id="@Model.Author.AuthorId" asp-route-pageNumber="@(Model.CurrentPage + 1)"
+               class="page-link">&raquo;</a>
+        </li>
+    </ul>
+</div>
